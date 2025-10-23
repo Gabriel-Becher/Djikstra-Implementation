@@ -3,9 +3,9 @@
 #define PARSE_INPUT_H
 #include "ioStructs.h"
 
-InputData* parseInput(char*);
-
-OutputData* parseOutput(char*);
+InputData* readInput(char*);
+    
+void writeOutput(OutputData*, char*);
 
 
 #endif

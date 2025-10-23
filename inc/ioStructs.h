@@ -9,6 +9,8 @@ typedef struct {
 
 typedef struct {
     char* answer;
+    int size;
+    int cost;
 } OutputData;
 
 #endif

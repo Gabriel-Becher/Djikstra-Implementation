@@ -3,14 +3,16 @@
 #include "../inc/parseFiles.h"
 #include "../inc/ioStructs.h"
 
-InputData* parseInput(char* filename) {
+InputData* readInput(char* filename) {
     FILE* file = fopen(filename, "r");
     fclose(file);
     return NULL;
 }
 
-OutputData* parseOutput(char* filename) {
-    FILE* file = fopen(filename, "r");
+void writeOutput(OutputData* outputData, char* filename) {
+    if (outputData == NULL) {
+        return;
+    }
+    FILE* file = fopen(filename, "w");
     fclose(file);
-    return NULL;
 }
