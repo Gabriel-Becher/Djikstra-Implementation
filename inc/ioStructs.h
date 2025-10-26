@@ -4,12 +4,12 @@
 typedef struct {
     int** matrix;
     int size;
-    char path[2];
+    char* path;
 } InputData;
 
 typedef struct {
-    char* answer;
-    int size;
+    char* path;
+    int length;
     int cost;
 } OutputData;
 

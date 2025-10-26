@@ -8,21 +8,23 @@ int main(int argc, char *argv[]) {
     if(argc != 3){
         exit(-1);
     }
+    InputData* inputData = NULL;
+    OutputData* outputData = NULL;
     /**
      * 1 - Lê arquivo de entrada e poe na struct
      * 2 - processa a struct de entrada que resulta na struct de saída
      * 3 - Escreve a struct de saída em um arquivo
      */
-    InputData* inputData = readInput(argv[1]);
+    inputData = readInput(argv[1]);
     if(inputData == NULL){
-        printf("Input error");
+        printf("Input error, verify file format");
         return -1;
     }
-    OutputData* outputData = djikstra(inputData);
+    outputData = djikstra(inputData);
     if(outputData == NULL){
-        printf("Could not process");
+        printf("Djikstra processing error\n");
         return -1;
-    }    
+    }
     writeOutput(outputData, argv[2]);
     return 0;
 }
