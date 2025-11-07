@@ -1,7 +1,6 @@
 CC=gcc
 
-CFLAGS=-I./inc -g
-#-Wall -Wextra -Werror
+CFLAGS=-I./inc -g -Wall -Wextra -Werror
 
 SRC = $(wildcard ./src/*.c)
 
