@@ -1,3 +1,10 @@
 {
-  "makefile.makePath": "C:\\MinGW\\bin\\mingw32-make"
+  "makefile.makePath": "C:\\MinGW\\bin\\mingw32-make",
+  "makefile.launchConfigurations": [
+    {
+      "cwd": "c:\\Users\\gabri\\Documents\\GitHub\\Djikstra-Implementation",
+      "binaryPath": "c:\\Users\\gabri\\Documents\\GitHub\\Djikstra-Implementation\\Djikstra",
+      "binaryArgs": []
+    }
+  ]
 }
