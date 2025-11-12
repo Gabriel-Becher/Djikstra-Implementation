@@ -17,22 +17,13 @@ int main(int argc, char *argv[]) {
      */
     inputData = readInput(argv[1]);
     if(inputData == NULL){
-        printf("Input error, verify file format");
+        printf("Erro de leitura\n");
         return -1;
     }
-    int size = inputData->size;
-    for(int i = 0; i < size; i++){
-        for(int j = 0; j < size; j++){
-            if(inputData->matrix[i][j] < 0){
-                printf("Input error, negative weight detected\n");
-                return -1;
-            }
-        }
-    }
-
+    
     outputData = djikstra(inputData);
     if(outputData == NULL){
-        printf("Djikstra processing error\n");
+        printf("Erro no processamento da matriz\n");
         return -1;
     }
     writeOutput(outputData, argv[2]);

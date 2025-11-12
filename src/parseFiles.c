@@ -29,14 +29,14 @@ InputData* readInput(char* filename) {
     for(int i = 0; i < size; i++){
         int j = 0;
         fgets(buffer, sizeof(buffer), file); // leio a linha
-        char* token = strtok(buffer, " \t");
+        char* token = strtok(buffer, " \t\n\r");
         while (token != NULL && j < size) {
-            if (j==0){
-                j++;
-                continue; // pulo o primeiro token que é cabeçalho
+            token = strtok(NULL, " \t\n\r");
+            if(token[0] == '-'){
+                matriz[i][j] = -1; // menos um vai indicar sem caminho
+            }else{
+                matriz[i][j] = atoi(token); // converto o token para inteiro e armazeno na matriz
             }
-            matriz[i][j] = atoi(token); // converto o token para inteiro e armazeno na matriz
-            token = strtok(NULL, " \t");
             j++;
         }
     }
