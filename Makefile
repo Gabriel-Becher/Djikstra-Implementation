@@ -1,23 +1,27 @@
-CC=gcc
+CC = gcc
+CFLAGS = -g -Wall -Wextra -O2
+TARGET = Djikstra
+SRC = main.c
 
-CFLAGS=-I./inc -g -Wall -Wextra -Werror
+# Compila diretamente sem diretórios de src/inc
+all: $(TARGET)
 
-SRC = $(wildcard ./src/*.c)
+$(TARGET): $(SRC)
+	$(CC) $(CFLAGS) -o $@ $^
 
-DEPS = $(wildcard ./inc/*.h)
+# Executa usando o arquivo de teste de entrada e gera saída
+run: $(TARGET)
+	./$(TARGET) < teste.in > saida.txt
+	@echo "Saída gerada em saida.txt"
 
-OBJ = $(SRC:.c=.o)
-
-%.o: %.c $(DEPS)
-	$(CC) -c -o $@ $< $(CFLAGS)
-
-Djikstra: $(OBJ)
-	$(CC) -o $@ $^ $(CFLAGS)
-	@echo "Cleaning up object files..."
-	@del /Q .\src\*.o 2>nul || echo Done
-
-.PHONY: clean
+# Compara saída com solução esperada (Windows PowerShell usando fc)
+compare: run
+	@echo "Comparando saida.txt com teste.sol"
+	@fc /N teste.sol saida.txt
 
 clean:
-	del /Q .\src\*.o 2>nul || echo Done
-	del /Q Djikstra.exe 2>nul || echo Done
+	-del /Q *.o 2>nul
+	-del /Q $(TARGET).exe 2>nul
+	-del /Q saida.txt 2>nul
+
+.PHONY: all run compare clean
