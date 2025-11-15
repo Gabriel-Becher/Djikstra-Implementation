@@ -37,44 +37,91 @@ int main() {
     outputData = djikstra(inputData);
 
     if(outputData == NULL){
-        printf("Erro no processamento da matriz\n");
+        for(int i = 0; i < inputData->tamanho; i++) {
+            free(inputData->matriz[i]);
+        }
+        free(inputData->matriz);
+        free(inputData->caminho);
+        free(inputData);
+        printf("Erro de processamento ou caminho impossível\n");
         return -1;
     }
     writeOutput(outputData);
+
+    free(outputData->caminho);
+    free(outputData);
+    for(int i = 0; i < inputData->tamanho; i++) {
+        free(inputData->matriz[i]);
+    }
+    free(inputData->matriz);
+    free(inputData->caminho);
+    free(inputData);
     return 0;
 }
 
 InputData* readInput() {
-    char buffer[256], caminho[3], inicio = '-', fim = '-';
+    char buffer[256], *caminho, inicio = '-', fim = '-';
     int tamanho = 0;
     int** matriz;
 
     fgets(buffer, sizeof(buffer), stdin); // Leio uma linha para ver quantos numeros tem
     
-    for(int i = 0; buffer[i] != '\0'; i++) {
-        if(buffer[i] != ' ' && buffer[i] != '\n' && buffer[i] != '\r' && buffer[i] != '\t') {
-            tamanho++; // contagem de caracteres de possiveis colunas
-        }
+    char* token = strtok(buffer, " \t\n\r");
+    while(token != NULL){
+        tamanho++;
+        token = strtok(NULL, " \t\n\r");
     }
+    
 
+    caminho = (char*)malloc(2 * sizeof(char)); // alocação do caminho
+    if(caminho == NULL) {
+        return NULL;
+    }
     matriz = (int**)malloc(tamanho * sizeof(int*));
+    if(matriz == NULL) {
+        free(caminho);
+        return NULL;
+    }
     for(int i = 0; i < tamanho; i++) {
         matriz[i] = (int*)malloc(tamanho * sizeof(int)); // alocação da matriz
+        if(matriz[i] == NULL) {
+            for(int j = 0; j < i; j++) {
+                free(matriz[j]);
+            }
+            free(matriz);
+            free(caminho);
+            return NULL;
+        }
     }
+   
     for(int i = 0; i < tamanho; i++){
         int j = 0;
         fgets(buffer, sizeof(buffer), stdin); // leio a linha
         char* token = strtok(buffer, " \t\n\r");
         while (token != NULL && j < tamanho) {
             token = strtok(NULL, " \t\n\r");
+            if(token == NULL && j < tamanho) {
+                free(caminho);
+                for(int k = 0; k < tamanho; k++) {
+                    free(matriz[k]);
+                }
+                free(matriz);
+                free(caminho);
+                return NULL;
+            }
             if(token[0] == '-'){
                 matriz[i][j] = -1; // menos um vai indicar sem caminho
             }else{
                 matriz[i][j] = atoi(token); // converto o token para inteiro e armazeno na matriz
+                if(matriz[i][j] < 0) {
+                    matriz[i][j] = -1; // vou tratar peso negativo assim pra evitar mais um monte de free()
+                }
             }
+            matriz[i][i] = -1; //pra evitar autoLoops
             j++;
         }
     }
+     
 
    while (fgets(buffer, sizeof(buffer), stdin)) {
        if (sscanf(buffer, "%c %c", &inicio, &fim) == 2) {
@@ -86,6 +133,8 @@ InputData* readInput() {
            free(matriz[i]);
        }
        free(matriz);
+       free(caminho);
+
        return NULL; // em caso de erro de leitura para evitar memory leak
    }
 
@@ -98,11 +147,12 @@ InputData* readInput() {
             free(matriz[i]);
         }
         free(matriz);
+        free(caminho);
         return NULL;
     }
     inputData->matriz = matriz;
     inputData->tamanho = tamanho;
-    inputData->caminho = (char*)caminho;
+    inputData->caminho = caminho;
     return inputData;
 }
 
@@ -122,10 +172,16 @@ OutputData* djikstra(InputData* inputData) {
     int* visitados = (int*)malloc(tamanho * sizeof(int));
     int* custos = (int*)malloc(tamanho * sizeof(int));
     int* caminho = (int*)malloc(tamanho * sizeof(int));
+    if (visitados == NULL || custos == NULL || caminho == NULL) {
+        free(visitados);
+        free(custos);
+        free(caminho);
+        return NULL;
+    }
     for (int i = 0; i < tamanho; i++) { // inigialização
         visitados[i] = 0;
         custos[i] = INFINITO;
-        caminho[i] = -1; // menos um indica sem caminho
+        caminho[i] = -1; // menos um, indica sem caminho
     }
     OutputData* outputData = (OutputData*)malloc(sizeof(OutputData));
     if (outputData == NULL) {
